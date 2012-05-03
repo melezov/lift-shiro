@@ -1,12 +1,14 @@
-package shiro.snippet
+package hr.element.etb
+package shiro
+package snippet
 
 import scala.xml.NodeSeq
 import net.liftweb.http.{DispatchSnippet,S}
 import net.liftweb.util.Helpers._
-import shiro.Utils._
+import Utils._
 
 sealed trait ShiroShippet {
-  def verification(xhtml: NodeSeq)(f: Boolean): NodeSeq = 
+  def verification(xhtml: NodeSeq)(f: Boolean): NodeSeq =
     if (f) xhtml else NodeSeq.Empty
 
   def serve(xhtml: NodeSeq, attribute: String = "name")(f: String => Boolean): NodeSeq =
@@ -21,7 +23,7 @@ trait SubjectSnippet extends DispatchSnippet with ShiroShippet {
 }
 
 object HasRole extends SubjectSnippet {
-  def render(xhtml: NodeSeq): NodeSeq = serve(xhtml){ 
+  def render(xhtml: NodeSeq): NodeSeq = serve(xhtml){
     hasRole(_)
   }
 }
@@ -45,15 +47,15 @@ object LacksPermission extends SubjectSnippet {
 }
 
 object HasAnyRoles extends SubjectSnippet {
-  def render(xhtml: NodeSeq): NodeSeq = 
-    serve(xhtml, attribute = "roles"){ roles => 
+  def render(xhtml: NodeSeq): NodeSeq =
+    serve(xhtml, attribute = "roles"){ roles =>
       hasAnyRoles(roles.split(","))
     }
 }
 
 object HasAllRoles extends SubjectSnippet {
-  def render(xhtml: NodeSeq): NodeSeq = 
-    serve(xhtml, attribute = "roles"){ roles => 
+  def render(xhtml: NodeSeq): NodeSeq =
+    serve(xhtml, attribute = "roles"){ roles =>
       hasAllRoles(roles.split(","))
     }
 }
