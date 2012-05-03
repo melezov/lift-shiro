@@ -1,7 +1,22 @@
-resolvers += "web-plugin.repo" at "http://siasia.github.com/maven2"    
+// +-------------------------------------------------------------------------------------+
+// | SBT Eclipse (https://github.com/typesafehub/sbteclipse)                             |
+// | Creates .project and .classpath files for easy Eclipse project imports              |
+// |                                                                                     |
+// | See also: Eclipse downloads (http://www.eclipse.org/downloads/)                     |
+// | See also: Scala IDE downloads (http://download.scala-ide.org/)                      |
+// +-------------------------------------------------------------------------------------+
 
-libraryDependencies <+= sbtVersion(v => "com.github.siasia" %% "xsbt-web-plugin" % (v+"-0.2.10"))
+resolvers += Classpaths.typesafeResolver
 
-resolvers += Resolver.url("sbt-plugin-releases", new URL("http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases/"))(Resolver.ivyStylePatterns)
+addSbtPlugin("com.typesafe.sbteclipse" % "sbteclipse-plugin" % "2.0.0-RC1")
 
-addSbtPlugin("com.jsuereth" % "xsbt-gpg-plugin" % "0.5")
+// +-------------------------------------------------------------------------------------+
+// | SBT Scalariform (https://github.com/typesafehub/sbt-scalariform)                    |
+// | Performs source code formatting                                                     |
+// |                                                                                     |
+// | See also: Scalariform reference (http://mdr.github.com/scalariform/)                |
+// +-------------------------------------------------------------------------------------+
+
+resolvers += Classpaths.typesafeResolver
+
+addSbtPlugin("com.typesafe.sbtscalariform" % "sbtscalariform" % "0.3.0")
