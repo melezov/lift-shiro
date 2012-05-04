@@ -12,8 +12,13 @@ object BuildSettings {
 
 object Dependencies {
   val liftVersion = "2.4"
-  val liftWebkit = "net.liftweb" %% "lift-webkit" % liftVersion
-
+  val liftWebkit = (_: String) match {
+    case "2.9.0-1" | "2.9.0" =>
+      "net.liftweb" %% "lift-webkit" % liftVersion
+    case _ =>
+      "net.liftweb" % "lift-webkit_2.9.1" % liftVersion
+  }
+  
   val ehcacheVersion = "2.5.1"
   val ehcache = Seq(
     "net.sf.ehcache" % "ehcache-core" % ehcacheVersion
@@ -27,8 +32,8 @@ object Dependencies {
   , "org.apache.shiro" % "shiro-web" % shiroVersion
   , "org.apache.shiro" % "shiro-ehcache" % shiroVersion
   , "net.sf.ehcache" % "ehcache-terracotta" % ehcacheVersion
-  , commonsLogging
-  , commonsCollections
+  , "commons-logging" % "commons-logging" % "1.1.1"
+  , "commons-collections" % "commons-collections" % "3.2.1"
   ) ++ ehcache  
   
   // Testing
@@ -39,7 +44,6 @@ import Implicits._
 
 object ProjectDeps {
   import Dependencies._
-  import Publications._
 
   val depsEtbLiftShiro = libDeps(
     liftWebkit
@@ -104,7 +108,7 @@ object Default {
     Resolvers.settings ++
     Publishing.settings ++ Seq(
       organization := "hr.element.etb"
-    , crossScalaVersions := Seq("2.9.1", "2.9.0-1", "2.9.0")
+    , crossScalaVersions := Seq("2.9.2", "2.9.1-1", "2.9.1", "2.9.0-1", "2.9.0")
     , scalaVersion <<= (crossScalaVersions) { versions => versions.head }
     , scalacOptions := Seq("-unchecked", "-deprecation", "-encoding", "UTF-8", "-optimise")
     , unmanagedSourceDirectories in Compile <<= (scalaSource in Compile)( _ :: Nil)
