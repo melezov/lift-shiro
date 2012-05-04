@@ -10,19 +10,9 @@ object BuildSettings {
   )
 }
 
-object Publications {
-  val liftShiro       = "hr.element.etb"  %  "lift-shiro"
-}
-
 object Dependencies {
-  import Publications._
-
   val liftVersion = "2.4"
-  val liftJson   = "net.liftweb" %% "lift-json"   % liftVersion
-  val liftCommon = "net.liftweb" %% "lift-common" % liftVersion
-  val liftUtil   = "net.liftweb" %% "lift-util"   % liftVersion
   val liftWebkit = "net.liftweb" %% "lift-webkit" % liftVersion
-  val liftNamedComet = "fmpwizard" %% "lift-named-comet" % "0.2"
 
   val ehcacheVersion = "2.5.1"
   val ehcache = Seq(
@@ -37,21 +27,12 @@ object Dependencies {
   , "org.apache.shiro" % "shiro-web" % shiroVersion
   , "org.apache.shiro" % "shiro-ehcache" % shiroVersion
   , "net.sf.ehcache" % "ehcache-terracotta" % ehcacheVersion
-  , "commons-logging" % "commons-logging" % "1.1.1"
-  ) ++ ehcache
-
-  // Logging
-  val logback = "ch.qos.logback" % "logback-classic" % "1.0.0" % "compile->default"
-  val log4jOverSlf4j = "org.slf4j" % "log4j-over-slf4j" % "1.6.4"
-
-  val pgJdbc4 = "postgresql" % "postgresql" % "9.0-801.jdbc4"
-
-  val scalaTest = "org.scalatest" %% "scalatest" % "1.6-SNAPSHOT"
-
-  val jodaTime = Seq(
-    "org.joda" % "joda-convert" % "1.2",
-    "joda-time" % "joda-time" % "2.0"
-  )
+  , commonsLogging
+  , commonsCollections
+  ) ++ ehcache  
+  
+  // Testing
+  val scalaTest = "org.scalatest" %% "scalatest" % "1.7.1" % "test" 
 }
 
 import Implicits._
@@ -63,8 +44,8 @@ object ProjectDeps {
   val depsEtbLiftShiro = libDeps(
     liftWebkit
   , shiro
+  , scalaTest
   )
-
 }
 
 //  ---------------------------------------------------------------------------
@@ -75,10 +56,9 @@ object EtbLiftShiro extends Build {
 
   lazy val etbLiftShiro = Project(
     "lift-shiro",
-    file("lift-shiro"),
+    file("."),
     settings = bsEtbLiftShiro :+ depsEtbLiftShiro
   )
-
 }
 
 //  ---------------------------------------------------------------------------
@@ -123,15 +103,14 @@ object Default {
     Defaults.defaultSettings ++
     Resolvers.settings ++
     Publishing.settings ++ Seq(
-      organization := "hr.element.etb",
-      crossScalaVersions := Seq("2.9.1", "2.9.0-1", "2.9.0"),
-      scalaVersion <<= (crossScalaVersions) { versions => versions.head },
-      scalacOptions := Seq("-unchecked", "-deprecation", "-encoding", "UTF-8", "-optimise"), // , "-Yrepl-sync"
-      unmanagedSourceDirectories in Compile <<= (scalaSource in Compile)( _ :: Nil),
-      unmanagedSourceDirectories in Test    <<= (scalaSource in Test   )( _ :: Nil)
+      organization := "hr.element.etb"
+    , crossScalaVersions := Seq("2.9.1", "2.9.0-1", "2.9.0")
+    , scalaVersion <<= (crossScalaVersions) { versions => versions.head }
+    , scalacOptions := Seq("-unchecked", "-deprecation", "-encoding", "UTF-8", "-optimise")
+    , unmanagedSourceDirectories in Compile <<= (scalaSource in Compile)( _ :: Nil)
+    , unmanagedSourceDirectories in Test    <<= (scalaSource in Test   )( _ :: Nil)
     )
 }
-
 
 object Implicits {
   implicit def depToFunSeq(m: ModuleID) = Seq((_: String) => m)
@@ -144,8 +123,3 @@ object Implicits {
     )
   }
 }
-
-
-
-
-
