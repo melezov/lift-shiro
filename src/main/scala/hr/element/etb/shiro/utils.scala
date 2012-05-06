@@ -1,10 +1,43 @@
 package hr.element.etb
 package shiro
 
+import scala.actors.Actor
+
+import org.apache.shiro.SecurityUtils
+import org.apache.shiro.subject.Subject
+
+object Karina extends Actor {
+
+  lazy val cm = 
+    net.sf.ehcache.CacheManager.getInstance.getCache("platform-admin-shiro-common")
+  
+  def act() {
+    while (true) {
+      receive {
+        case ("CM") =>
+          
+        case ("HASROLE", x: String) =>
+          val s = SecurityUtils.getSubject().getPrincipal()
+          println("Actor power! : " + s)
+          
+          println("ACTOR IS IM: " + Thread.currentThread)
+          
+          val isit = SecurityUtils.getSubject().hasRole(x)
+          
+          println("IMA ROLU2 " + x + ": " + isit)
+        
+          reply(isit)          
+      }
+    }
+  }    
+  
+  println("Starcinggu?")
+  start()
+}
+
+
 object Utils extends Utils
 private[shiro] trait Utils {
-  import org.apache.shiro.SecurityUtils
-  import org.apache.shiro.subject.Subject
   import net.liftweb.common.Box
 
   implicit val subject = () => SecurityUtils.getSubject()
@@ -27,10 +60,25 @@ private[shiro] trait Utils {
 
   def hasRole(role: String) =
     test { s =>
+    
+    
       println("##############################################3")
       println("##############################################3")
       println("SUBJECT: " + s.getPrincipal())
       println("IMA ROLU " + role + ": " + s.hasRole(role))
+
+     // new Exception("res0").getStackTrace.toList.foreach(println)
+      
+      
+      println("ICH BIN IM: " + Thread.currentThread)
+      
+      
+      val result = Karina !! (("HASROLE", role))
+      println("SUBJECT2: " + result)
+
+      
+      
+      
       println("##############################################3")
       println("##############################################3")
       s.hasRole(role)

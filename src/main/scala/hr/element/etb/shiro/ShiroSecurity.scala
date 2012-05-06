@@ -44,7 +44,7 @@ object Shirou extends Factory {
     }
   }
 
-  def init(path: String){
+  def init(path: String = "classpath:shiro.ini"){
     init(new IniSecurityManagerFactory(path))
   }
 
@@ -69,41 +69,4 @@ object Shirou extends Factory {
 
 object LoginRedirect extends SessionVar[Box[String]](Empty){
   override def __nameSalt = Helpers.nextFuncName
-}
-
-trait IShiroSecurity {
-  import Utils._
-
-  val iniPath: String
-
-  val CacheRedirectPrefix = "BACK_TO-"
-
-  val cache = CacheManager.getInstance.getCache("platform-admin-shiro-common")
-  def currentUser = subject()
-  def session = subject().getSession()
-
-
-  def init() =
-    Shirou.init(iniPath)
-
-  def username =
-    try {currentUser.getPrincipal().toString}
-    catch {case _ => "UNKNOWN"}
-
-
-  def logout() = {
-    currentUser.logout()
-  }
-
-  def login(_username: String, _password: String): Unit = {
-    try {
-      val token = new UsernamePasswordToken(_username, _password)
-      currentUser.login(token)
-    }
-    catch {
-      case t: Throwable =>
-        t.printStackTrace()
-    }
-  }
-
 }
