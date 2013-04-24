@@ -6,17 +6,17 @@ object BuildSettings {
 
   val bsEtbLiftShiro = scalaSettings ++ Seq(
     name    := "lift-shiro",
-    version := "0.2.6"
+    version := "0.3.0"
   )
 }
 
 object Dependencies {
-  val liftVersion = "2.4"
+  val liftVersion = "2.5-RC5"
   val liftWebkit = (_: String) match {
-    case "2.9.0-1" | "2.9.0" =>
+    case _ => // "2.9.0-1" | "2.9.0" =>
       "net.liftweb" %% "lift-webkit" % liftVersion
-    case _ =>
-      "net.liftweb" % "lift-webkit_2.9.1" % liftVersion
+//    case _ =>
+//      "net.liftweb" % "lift-webkit_2.9.1" % liftVersion
   }
   
   val ehcacheVersion = "2.5.1"
@@ -37,7 +37,7 @@ object Dependencies {
   ) ++ ehcache  
   
   // Testing
-  val scalaTest = "org.scalatest" %% "scalatest" % "1.7.1" % "test" 
+  val scalaTest = "org.scalatest" %% "scalatest" % "1.9.1" % "test" 
 }
 
 import Implicits._
@@ -108,8 +108,8 @@ object Default {
     Resolvers.settings ++
     Publishing.settings ++ Seq(
       organization := "hr.element.etb"
-    , crossScalaVersions := Seq("2.9.2", "2.9.1-1", "2.9.1", "2.9.0-1", "2.9.0")
-    , scalaVersion <<= (crossScalaVersions) { versions => versions.head }
+    , crossScalaVersions := Seq("2.10.1", "2.9.3", "2.9.2", "2.9.1-1", "2.9.1", "2.9.0-1", "2.9.0")
+    , scalaVersion <<= crossScalaVersions(_.head)
     , scalacOptions := Seq("-unchecked", "-deprecation", "-encoding", "UTF-8", "-optimise")
     , unmanagedSourceDirectories in Compile <<= (scalaSource in Compile)( _ :: Nil)
     , unmanagedSourceDirectories in Test    <<= (scalaSource in Test   )( _ :: Nil)
