@@ -18,7 +18,7 @@ object Dependencies {
 //    case _ =>
 //      "net.liftweb" % "lift-webkit_2.9.1" % liftVersion
   }
-  
+
   val ehcacheVersion = "2.5.1"
   val ehcache = Seq(
     "net.sf.ehcache" % "ehcache-core" % ehcacheVersion
@@ -34,10 +34,10 @@ object Dependencies {
   , "net.sf.ehcache" % "ehcache-terracotta" % ehcacheVersion
   , "commons-logging" % "commons-logging" % "1.1.1"
   , "commons-collections" % "commons-collections" % "3.2.1"
-  ) ++ ehcache  
-  
+  ) ++ ehcache
+
   // Testing
-  val scalaTest = "org.scalatest" %% "scalatest" % "1.9.1" % "test" 
+  val scalaTest = "org.scalatest" %% "scalatest" % "1.9.1" % "test"
 }
 
 import Implicits._
@@ -68,9 +68,9 @@ object EtbLiftShiro extends Build {
 //  ---------------------------------------------------------------------------
 
 object Repositories {
-  val ElementNexus     = "Element Nexus"     at "http://maven.element.hr/nexus/content/groups/public/"
-  val ElementReleases  = "Element Releases"  at "http://maven.element.hr/nexus/content/repositories/releases/"
-  val ElementSnapshots = "Element Snapshots" at "http://maven.element.hr/nexus/content/repositories/snapshots/"
+  val ElementNexus     = "Element Nexus"     at "http://repo.element.hr/nexus/content/groups/public"
+  val ElementReleases  = "Element Releases"  at "http://repo.element.hr/nexus/content/repositories/releases/"
+  val ElementSnapshots = "Element Snapshots" at "http://repo.element.hr/nexus/content/repositories/snapshots/"
 }
 
 //  ---------------------------------------------------------------------------
@@ -79,9 +79,9 @@ object Resolvers {
   import Repositories._
 
   val settings = Seq(
-    resolvers := Seq(ElementNexus, ElementReleases, ElementSnapshots),
+    resolvers := Seq(ElementNexus, ElementSnapshots),
     externalResolvers <<= resolvers map { rs =>
-      Resolver.withDefaultResolvers(rs, mavenCentral = false, scalaTools = false)
+      Resolver.withDefaultResolvers(rs, mavenCentral = false)
     }
   )
 }
@@ -92,11 +92,11 @@ object Publishing {
   import Repositories._
 
   val settings = Seq(
-    publishTo <<= (version) { version => Some(
-      if (version.endsWith("SNAPSHOT")) ElementSnapshots else ElementReleases
-    )},
-    credentials += Credentials(Path.userHome / ".publish" / "element.credentials"),
-    publishArtifact in (Compile, packageDoc) := false
+    publishTo <<= version { version => Some(
+      if (version endsWith "SNAPSHOT") ElementSnapshots else ElementReleases
+    )}
+  , credentials += Credentials(Path.userHome / ".config" / "lift-shiro" / "nexus.config") 
+  , publishArtifact in (Compile, packageDoc) := false
   )
 }
 
@@ -108,7 +108,7 @@ object Default {
     Resolvers.settings ++
     Publishing.settings ++ Seq(
       organization := "hr.element.etb"
-    , crossScalaVersions := Seq("2.10.1", "2.9.3", "2.9.2", "2.9.1-1", "2.9.1", "2.9.0-1", "2.9.0")
+    , crossScalaVersions := Seq("2.10.1", "2.9.2", "2.9.1-1", "2.9.1")
     , scalaVersion <<= crossScalaVersions(_.head)
     , scalacOptions := Seq("-unchecked", "-deprecation", "-encoding", "UTF-8", "-optimise")
     , unmanagedSourceDirectories in Compile <<= (scalaSource in Compile)( _ :: Nil)

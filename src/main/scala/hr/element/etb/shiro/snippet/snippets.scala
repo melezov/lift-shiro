@@ -83,4 +83,3 @@ object IsNotAuthenticated extends SubjectSnippet {
     !isAuthenticated
   }
 }
-
